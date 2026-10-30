@@ -378,12 +378,15 @@ export default function ChatMessage({ message, onRegenerate }) {
           <div className="msg-attachments-strip">
             {attachments.map((att) => {
               if (att.attachment_type === 'image') {
+                const src = att.previewUrl || (att.file_path ? `http://localhost:8000/uploads/${att.file_path.split(/[\\/]/).pop()}` : '');
                 return (
                   <img
                     key={att.id}
-                    src={att.file_path ? `http://localhost:8000/uploads/${att.file_path.split(/[\\/]/).pop()}` : ''}
+                    src={src}
                     alt={att.file_name}
                     className="msg-img-thumb"
+                    title={`${att.file_name} (Click to open)`}
+                    onClick={() => src && window.open(src, '_blank')}
                   />
                 );
               }

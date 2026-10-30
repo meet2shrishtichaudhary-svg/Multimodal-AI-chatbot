@@ -350,24 +350,71 @@ def build_complete_pdf(output_path: str):
     ]))
     story.append(metrics_table)
 
-    story.append(Spacer(1, 10))
+    story.append(PageBreak())
+
+    # =========================================================================
+    # PAGE 3: PROJECT OVERVIEW & SYSTEM ARCHITECTURE
+    # =========================================================================
     story.append(Paragraph("2. Project Overview &amp; System Architecture", styles['H1']))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#CBD5E1"), spaceBefore=2, spaceAfter=8))
     story.append(Paragraph(
         "Aura AI is an advanced multimodal workspace designed for enterprise and creative intelligence workflows. "
-        "The architecture is organized into four core layers: (1) <b>Presentation Layer:</b> React 18, Vite, Lucide icons, "
-        "Tailwind/vanilla CSS variables, custom markdown rendering; (2) <b>API Gateway &amp; Orchestration Layer:</b> "
-        "FastAPI 0.115 on Uvicorn ASGI with Server-Sent Events (SSE) streaming, JWT bearer token security, and sliding-window rate limiting; "
-        "(3) <b>Intelligence Layer:</b> Google Gemini 2.5 Flash, Flux SVG visual synthesis, Tavily/DuckDuckGo live web research, "
-        "pypdf/python-docx native parsing, and TF-IDF/pgvector hybrid RAG; (4) <b>Persistence &amp; Cache:</b> PostgreSQL 16 + pgvector "
-        "with automatic graceful degradation to SQLite WAL mode, plus JSON/binary automated backup utilities.",
+        "The application integrates conversational LLMs, real-time streaming, image generation and vision understanding, "
+        "native document extraction (PDF, DOCX, TXT), grounded RAG retrieval, live web search, document workspaces with version diff/restore, "
+        "and multi-tenant user authentication.",
+        styles['Body']
+    ))
+    story.append(Spacer(1, 4))
+
+    arch_layers_data = [
+        [Paragraph("<b>Architectural Layer</b>", styles['TableHead']), Paragraph("<b>Technologies &amp; Modules</b>", styles['TableHead']), Paragraph("<b>Core Responsibilities &amp; Guarantees</b>", styles['TableHead'])],
+        [
+            Paragraph("<b>1. Presentation Layer</b><br/>(Client SPA)", styles['TableCellBold']),
+            Paragraph("React 18 / 19, Vite v8, Lucide React, CSS Variables, EventSource SSE", styles['TableCell']),
+            Paragraph("Modular chat interface, document workspace with diff view, circular '+' attachment menu with image previews, responsive mobile/tablet layout.", styles['TableCell'])
+        ],
+        [
+            Paragraph("<b>2. API Gateway &amp; Orchestration</b><br/>(FastAPI / Uvicorn)", styles['TableCellBold']),
+            Paragraph("FastAPI 0.115, Uvicorn ASGI, Pydantic v2 schemas, JWT (HS256)", styles['TableCell']),
+            Paragraph("Asynchronous request pipeline, sliding-window rate limiters (auth/chat), path traversal defenses, correlation ID tracking, and Server-Sent Events.", styles['TableCell'])
+        ],
+        [
+            Paragraph("<b>3. Multimodal Intelligence</b><br/>(AI Engine &amp; RAG)", styles['TableCellBold']),
+            Paragraph("Gemini 2.5 Flash, Gemini Vision, Flux REST, DuckDuckGo/Tavily, pypdf, python-docx", styles['TableCell']),
+            Paragraph("Multimodal image analysis, SVG visual synthesis fallback, grounded document retrieval with page citations, live web synthesis, and long-term memory extraction.", styles['TableCell'])
+        ],
+        [
+            Paragraph("<b>4. Persistence &amp; Cache</b><br/>(Database Storage)", styles['TableCellBold']),
+            Paragraph("PostgreSQL 16 + pgvector, SQLite WAL fallback, SQLAlchemy 2.0, Alembic", styles['TableCell']),
+            Paragraph("ACID transaction guarantees, multi-tenant user isolation (user_id partitioning), binary image/document storage, and automated timestamped backups.", styles['TableCell'])
+        ],
+    ]
+    arch_table = Table(arch_layers_data, colWidths=[120, 154, 230])
+    arch_table.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor("#1E293B")),
+        ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor("#CBD5E1")),
+        ('ROWBACKGROUNDS', (0,1), (-1,-1), [colors.HexColor("#FFFFFF"), colors.HexColor("#F8FAFC")]),
+        ('PADDING', (0,0), (-1,-1), 5),
+        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+    ]))
+    story.append(arch_table)
+    story.append(Spacer(1, 10))
+
+    story.append(Paragraph("System Architecture Highlights &amp; Invariants", styles['H2']))
+    story.append(Paragraph(
+        "&bull; <b>Graceful Database Degradation:</b> If the production PostgreSQL container or pgvector extension is offline, "
+        "Aura AI automatically initializes a local SQLite database in Write-Ahead Logging (WAL) mode without interrupting operations.<br/>"
+        "&bull; <b>Zero-Trust Multi-Tenancy:</b> All database queries enforce strict user-level partitioning. Users can only access their "
+        "own conversations, documents, memories, and workspace files.<br/>"
+        "&bull; <b>Real-Time Event Streaming:</b> Full SSE pipeline delivers progressive token chunks, live image rendering cards, "
+        "and source citation badges directly to the frontend.",
         styles['Body']
     ))
 
     story.append(PageBreak())
 
     # =========================================================================
-    # PAGES 3 & 4: COMPLETE FEATURE VERIFICATION MATRIX (38 FEATURES)
+    # PAGES 4 & 5: COMPLETE FEATURE VERIFICATION MATRIX (38 FEATURES)
     # =========================================================================
     story.append(Paragraph("3. Complete Feature Verification Matrix (All 38 Features)", styles['H1']))
     story.append(HRFlowable(width="100%", thickness=1, color=colors.HexColor("#CBD5E1"), spaceBefore=2, spaceAfter=8))
